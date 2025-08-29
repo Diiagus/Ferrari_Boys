@@ -1,0 +1,338 @@
+<!--
+Project: Apollo Automotive Store (Demo)
+Files included in this single-file starter:
+- index.html  (contains HTML, CSS, JS)
+
+INSTRUCCIONES RÁPIDAS:
+1) Abre este archivo en VSCode (o crea un nuevo proyecto con este index.html).
+2) Reemplaza el número de WhatsApp (PHONE_PLACEHOLDER) por tu número de WhatsApp Business en formato internacional sin + ni espacios (ej: 5215512345678 para México +52 1 55 1234 5678).
+3) Reemplaza las rutas de modelos .glb por tus modelos 3D de coches (puedes subirlos en /models dentro del repo y Netlify los servirá estáticamente).
+4) Haz commit a GitHub y despliega en Netlify (instrucciones detalladas en el chat).
+
+-->
+
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Apollo Automotive Store</title>
+
+  <!-- Model Viewer (3D) -->
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+  <style>
+    :root{
+      --sky: #5DADE2; /* sky blue (sobrio) */
+      --dark: #0f1720; /* casi negro */
+      --muted: #6B7280; /* gris */
+      --white: #ffffff;
+      --glass: rgba(255,255,255,0.06);
+      --card-bg: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,#071026 0%, #071428 50%);color:var(--white);min-height:100vh}
+
+    header{display:flex;align-items:center;justify-content:space-between;padding:18px 28px;background:rgba(0,0,0,0.25);backdrop-filter:blur(6px)}
+    .brand{display:flex;align-items:center;gap:14px}
+    .logo{width:48px;height:48px;border-radius:10px;background:var(--sky);display:flex;align-items:center;justify-content:center;color:var(--dark);font-weight:700}
+    .title{font-size:18px;font-weight:700}
+
+    main{padding:28px;max-width:1200px;margin:18px auto}
+
+    .controls{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+    select,input{padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.03);color:var(--white)}
+
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+    .card{background:var(--card-bg);padding:14px;border-radius:12px;box-shadow:0 6px 20px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.03)}
+    .thumb{height:160px;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.15));}
+    .thumb img{max-width:100%;max-height:100%;object-fit:cover}
+    .meta{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+    .brand-name{font-weight:700}
+    .price{font-weight:800;color:var(--sky)}
+
+    .btn{display:inline-block;padding:8px 12px;border-radius:8px;background:var(--sky);color:var(--dark);font-weight:700;text-decoration:none;border:none;cursor:pointer}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--white)}
+
+    /* modal */
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:linear-gradient(0deg, rgba(0,0,0,0.6), rgba(0,0,0,0.6));padding:24px}
+    .modal.active{display:flex}
+    .modal-card{width:100%;max-width:1000px;background:linear-gradient(180deg,#071428,#0b1520);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+    .modal-body{display:flex;gap:12px;flex-direction:column}
+
+    @media(min-width:900px){
+      .modal-body{flex-direction:row}
+      .viewer{width:60%}
+      .info{width:40%}
+    }
+
+    footer{padding:12px 28px;text-align:center;color:var(--muted)}
+
+    /* small helpers */
+    .muted{color:var(--muted);font-size:13px}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="logo">A</div>
+      <div>
+        <div class="title">Apollo Automotive Store</div>
+        <div class="muted">Autos de lujo · Exclusivo · Seguro</div>
+      </div>
+    </div>
+    <nav>
+      <a class="btn" href="#">Catálogo</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="controls">
+      <select id="brandFilter">
+        <option value="">Todas las marcas</option>
+      </select>
+
+      <select id="modelFilter">
+        <option value="">Todos los modelos</option>
+      </select>
+
+      <select id="sortPrice">
+        <option value="desc">Precio: Mayor a menor</option>
+        <option value="asc">Precio: Menor a mayor</option>
+      </select>
+
+      <input id="search" type="search" placeholder="Buscar por modelo o detalle" />
+
+      <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+        <small class="muted">Contacto sólo por WhatsApp</small>
+      </div>
+    </section>
+
+    <section class="grid" id="productGrid">
+      <!-- tarjetas generadas por JS -->
+    </section>
+  </main>
+
+  <!-- Modal 3D -->
+  <div id="modal" class="modal" role="dialog" aria-hidden="true">
+    <div class="modal-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div class="muted">Vista 3D</div>
+        <button id="closeModal" class="btn ghost">Cerrar</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="viewer">
+          <!-- model-viewer se inserta dinámicamente -->
+          <div id="modelContainer" style="background:rgba(255,255,255,0.02);border-radius:8px;padding:6px"></div>
+        </div>
+
+        <div class="info">
+          <h3 id="modalTitle">Marca Modelo</h3>
+          <p id="modalPrice" class="price">$0</p>
+          <p id="modalDesc" class="muted">Detalles del vehículo</p>
+
+          <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+            <a id="whatsappBtn" class="btn" href="#" target="_blank" rel="noopener">Contactar por WhatsApp</a>
+            <button id="view360btn" class="btn ghost">Ver en pantalla completa</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    © Apollo Automotive Store · Hecho con cuidado
+  </footer>
+
+  <script>
+    // ---------- Datos de ejemplo (reemplaza por tu catálogo real) ----------
+    const CARS = [
+      {
+        id:1,
+        brand:'Valence',
+        model:'V-Shadow',
+        price:4250000,
+        img:'https://images.unsplash.com/photo-1511919884226-fd3cad34687c?q=80&w=1400&auto=format&fit=crop&ixlib=rb-4.0.3&s=5c5f4a2a2c9b6b6c4a9cf6b2f5bf2f62',
+        glb:'https://modelviewer.dev/shared-assets/models/NeilArmstrong.glb',
+        desc:'Coupe deportivo edición limitada con interior en piel y paquete de seguridad premium.'
+      },
+      {
+        id:2,
+        brand:'Orion',
+        model:'O-Racer',
+        price:2980000,
+        img:'https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1400&auto=format&fit=crop&ixlib=rb-4.0.3&s=2b5a6cb0a6b6a2c3d6a6c9d5b3b8f8f6',
+        glb:'https://modelviewer.dev/shared-assets/models/Astronaut.glb',
+        desc:'Sedán de lujo con tecnología híbrida y asistencia de conducción avanzada.'
+      },
+      {
+        id:3,
+        brand:'Valence',
+        model:'V-Prime',
+        price:5120000,
+        img:'https://images.unsplash.com/photo-1549921296-3a4f9ad0d5a2?q=80&w=1400&auto=format&fit=crop&ixlib=rb-4.0.3&s=1252b8a2b9a8c3e4a2f0b1c8d9c6e0c8',
+        glb:'https://modelviewer.dev/shared-assets/models/NeilArmstrong.glb',
+        desc:'Limusina de alto rendimiento con paquete ejecutivo y acabados exclusivos.'
+      }
+    ];
+
+    // ---------- Configuración: reemplaza este número por tu WhatsApp Business (formato internacional sin +) ----------
+    const WHATSAPP_NUMBER = 'PHONE_PLACEHOLDER'; // EJ: 5215512345678
+
+    // ---------- UI y lógica ----------
+    const brandFilter = document.getElementById('brandFilter');
+    const modelFilter = document.getElementById('modelFilter');
+    const sortPrice = document.getElementById('sortPrice');
+    const searchInput = document.getElementById('search');
+    const grid = document.getElementById('productGrid');
+
+    function populateFilters(){
+      const brands = Array.from(new Set(CARS.map(c=>c.brand)));
+      brands.forEach(b=>{
+        const opt = document.createElement('option'); opt.value=b; opt.textContent=b; brandFilter.appendChild(opt);
+      });
+      renderCars();
+    }
+
+    function renderCars(){
+      grid.innerHTML='';
+      let list = [...CARS];
+      const b = brandFilter.value; const m = modelFilter.value; const q = searchInput.value.toLowerCase();
+
+      if(b) list = list.filter(x=>x.brand===b);
+      if(m) list = list.filter(x=>x.model===m);
+      if(q) list = list.filter(x=> (x.model + ' ' + x.brand + ' ' + x.desc).toLowerCase().includes(q));
+
+      // sort
+      const dir = sortPrice.value;
+      list.sort((a,b_)=> dir==='desc' ? b_.price - a.price : a.price - b_.price);
+
+      list.forEach(car=>{
+        const card = document.createElement('article'); card.className='card';
+        card.innerHTML = `
+          <div class="thumb"><img src="${car.img}" alt="${car.brand} ${car.model}"></div>
+          <div style="margin-top:8px">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <div class="brand-name">${car.brand} <small class="muted">${car.model}</small></div>
+                <div class="muted">ID: ${car.id}</div>
+              </div>
+              <div class="price">$${numberWithCommas(car.price)}</div>
+            </div>
+            <div style="margin-top:10px;display:flex;gap:8px">
+              <button class="btn" data-id="${car.id}">Ver 3D</button>
+              <a class="btn ghost" href="#" data-id="${car.id}" onclick="event.preventDefault(); contactQuick(${car.id});">Contactar</a>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+
+        card.querySelector('.btn').addEventListener('click',()=> showModal(car));
+      });
+    }
+
+    function numberWithCommas(x){ return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g,","); }
+
+    // modal
+    const modal = document.getElementById('modal');
+    const closeModal = document.getElementById('closeModal');
+    const modelContainer = document.getElementById('modelContainer');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalPrice = document.getElementById('modalPrice');
+    const modalDesc = document.getElementById('modalDesc');
+    const whatsappBtn = document.getElementById('whatsappBtn');
+
+    function showModal(car){
+      modal.classList.add('active');
+      modal.setAttribute('aria-hidden','false');
+      modalTitle.textContent = `${car.brand} ${car.model}`;
+      modalPrice.textContent = `$${numberWithCommas(car.price)}`;
+      modalDesc.textContent = car.desc;
+
+      // insertar model-viewer (limpiar primero)
+      modelContainer.innerHTML = '';
+      const mv = document.createElement('model-viewer');
+      mv.setAttribute('src', car.glb);
+      mv.setAttribute('alt', `${car.brand} ${car.model} 3D`);
+      mv.setAttribute('camera-controls', '');
+      mv.setAttribute('auto-rotate', '');
+      mv.style.width='100%'; mv.style.height='420px'; mv.style.borderRadius='8px';
+      mv.setAttribute('shadow-intensity','1');
+      modelContainer.appendChild(mv);
+
+      // whatsapp link
+      const text = encodeURIComponent(`Hola, estoy interesado en el ${car.brand} ${car.model} (ID:${car.id}) listado en Apollo Automotive Store. ¿Está disponible?`);
+      whatsappBtn.href = buildWhatsAppLink(WHATSAPP_NUMBER, text);
+    }
+
+    closeModal.addEventListener('click',()=>{
+      modal.classList.remove('active'); modal.setAttribute('aria-hidden','true');
+      modelContainer.innerHTML='';
+    });
+
+    // contacto rápido desde listado
+    function contactQuick(id){
+      const car = CARS.find(c=>c.id===id);
+      if(!car){ alert('Vehículo no encontrado'); return; }
+      const text = encodeURIComponent(`Hola, quiero info del ${car.brand} ${car.model} (ID:${car.id}).`);
+      const url = buildWhatsAppLink(WHATSAPP_NUMBER, text);
+      window.open(url,'_blank');
+    }
+
+    function buildWhatsAppLink(number, text){
+      if(!number || number === 'PHONE_PLACEHOLDER'){
+        alert('Por favor configura tu número de WhatsApp Business en el archivo.');
+        return '#';
+      }
+      // Formato wa.me: https://wa.me/<number>?text=<urlencoded text>
+      return `https://wa.me/${number}?text=${text}`;
+    }
+
+    // eventos filtros
+    brandFilter.addEventListener('change',()=>{
+      // actualizar modelos disponibles
+      const brand = brandFilter.value;
+      modelFilter.innerHTML = '<option value="">Todos los modelos</option>';
+      const models = CARS.filter(c=>!brand||c.brand===brand).map(c=>c.model);
+      Array.from(new Set(models)).forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent=m;modelFilter.appendChild(o)});
+      renderCars();
+    });
+    modelFilter.addEventListener('change',renderCars);
+    sortPrice.addEventListener('change',renderCars);
+    searchInput.addEventListener('input',renderCars);
+
+    // inicializar
+    populateFilters();
+  </script>
+
+  <!--
+    README (resumen de pasos - no repetir si ya sigues el chat):
+
+    1) Abrir en VSCode: crear carpeta "apollo-store" y guardar este index.html.
+    2) Reemplazar PHONE_PLACEHOLDER por tu número de WhatsApp (sin + ni espacios).
+    3) Agregar tus modelos .glb a /models (o URLs externas) y actualizar CARS[].glb.
+    4) Git básico: git init, git add ., git commit -m "initial", crear repo en GitHub, push.
+       Ejemplos:
+         git init
+         git branch -M main
+         git remote add origin https://github.com/tu_usuario/tu_repo.git
+         git add .
+         git commit -m "Initial commit"
+         git push -u origin main
+
+    5) Deploy a Netlify: crear cuenta, "Add new site" -> conectar a GitHub -> seleccionar repo -> Deploy (Netlify hará deploy automático).
+       Alternativa: arrastrar carpeta con archivos a Netlify Drop.
+
+    6) Comprar dominio: usar registrador (ej: Namecheap, Google Domains). En Netlify: Site settings -> Domain management -> Add custom domain. Configurar DNS según instrucciones (usar Netlify DNS o apuntar A/CNAME).
+
+    7) SSL: Netlify provee HTTPS automático via Let's Encrypt una vez configurado el dominio.
+
+    8) Servidor/backend (opcional): si necesitas API para reservas, pagos o base de datos, puedes usar Netlify Functions (serverless) o contratar un VPS (DigitalOcean, etc.).
+
+    9) Recursos 3D: modelviewer.dev para mostrar modelos .glb/.gltf; Blender para exportar glTF/GLB.
+
+  -->
+</body>
+</html>
