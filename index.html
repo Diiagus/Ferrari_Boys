@@ -4,78 +4,142 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Apollo Automotive Store</title>
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <!-- model-viewer (visor 3D) -->
+
+  <meta name="description" content="Apollo Automotive Store — Autos de lujo con actitud joven. Inventario, detalles y contacto por WhatsApp." />
+  <meta name="theme-color" content="#2c2f33">
+
+  <!-- Fuentes -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Raleway:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <!-- model-viewer (por si luego usas 3D) -->
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
   <style>
-    /* ---------------------------
-       PALETA: azul cielo, blanco, gris, negro
-       Tipografía y layout simple, profesional y juvenil
-       --------------------------- */
     :root{
-      --sky:#87CEEB;      /* azul cielo */
-      --deep:#0f1724;     /* casi negro */
-      --muted:#6b7280;    /* gris */
-      --bg:#f8fbff;       /* fondo muy claro */
-      --card:#ffffff;
-      --accent:#0ea5ff;
-      --radius:18px;
+      /* Colores base */
+      --cement-800:#2c2f33; --cement-700:#3a3e44;
+      --surface:#e3e6ea; --surface-2:#edf0f3;
+      --card-border:#cfd5dd; --card-shadow:0 10px 30px rgba(0,0,0,.20);
+      --ink:#e9ecf1; --muted:#b8bec6; --deep:#0f1724;
+      --accent:#0ea5ff; --accent-ink:#081019;
     }
-    *{box-sizing:border-box;font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;}
-    body{margin:0;background:linear-gradient(180deg,var(--bg),#ffffff);color:var(--deep);-webkit-font-smoothing:antialiased;}
+
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:'Manrope',system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      background:linear-gradient(180deg,var(--cement-800),var(--cement-700)); color:var(--ink);
+      -webkit-font-smoothing:antialiased;
+    }
+    h1,h2,h3{font-family:'Raleway',sans-serif; letter-spacing:.3px;}
+
+    /* Layout y header */
     .container{max-width:1200px;margin:0 auto;padding:28px;}
     header{display:flex;gap:24px;align-items:center;justify-content:space-between;padding:18px 0;}
     .logo{display:flex;gap:12px;align-items:center}
-    .logo .mark{width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,var(--sky),var(--accent));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;box-shadow:0 8px 30px rgba(14,165,255,0.12)}
-    .brand{font-size:18px;font-weight:700}
+    .logo .mark{
+      width:150px;height:75px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;
+      box-shadow:0 10px 30px rgba(14,165,255,0.2); overflow:hidden; border:1px solid rgba(255,255,255,.25);
+    }
+    .logo .mark img{width:100%;height:100%;object-fit:cover}
+    .brand{font-size:18px;font-weight:800}
     .tag{font-size:12px;color:var(--muted)}
-    /* HERO */
+
+    /* Hero */
     .hero{display:flex;gap:28px;align-items:center;padding:28px;background:transparent}
     .hero-left{flex:1}
-    .main-title{font-size:40px;margin:0;line-height:1.02}
+    .main-title{margin:0;line-height:1.02;font-weight:800;font-size:clamp(30px,5vw,44px);letter-spacing:.6px}
     .subtitle{margin-top:12px;color:var(--muted);font-size:16px}
     .cta-row{margin-top:18px;display:flex;gap:10px}
-    .btn{padding:12px 18px;border-radius:14px;border:0;cursor:pointer;font-weight:600}
-    .btn-primary{background:var(--deep);color:white;box-shadow:0 12px 30px rgba(15,23,36,0.12)}
-    .btn-outline{background:transparent;border:2px solid rgba(15,23,36,0.06);color:var(--deep)}
-    /* tarjeta visual */
-    .card-feature{width:420px;background:var(--card);padding:14px;border-radius:16px;box-shadow:0 8px 30px rgba(2,6,23,0.06);}
-    .car-img{width:100%;height:220px;object-fit:cover;border-radius:12px}
-    /* filtros */
+    .btn{padding:12px 18px;border-radius:14px;border:0;cursor:pointer;font-weight:700;letter-spacing:.2px}
+    .btn-primary{background:var(--accent);color:var(--accent-ink);box-shadow:0 12px 30px rgba(14,165,255,0.28)}
+    .btn-outline{background:transparent;border:2px solid rgba(255,255,255,0.28);color:var(--ink)}
+    .btn:focus-visible{outline:3px solid #8fd3ff;outline-offset:2px}
+
+    /* Card destacada (hero) */
+    .card-feature{
+      width:420px;background:var(--surface);padding:14px;border-radius:16px;
+      border:1px solid var(--card-border);box-shadow:var(--card-shadow);color:var(--deep)
+    }
+    .car-img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:12px}
+
+    /* Filtros (sólo marca y modelo) */
     .filters{display:flex;gap:12px;align-items:center;margin-top:18px;flex-wrap:wrap}
-    select, .input{padding:10px 12px;border-radius:12px;border:1px solid #e6eef8;background:white}
-    /* grid de coches */
+    select{padding:10px 12px;border-radius:12px;border:1px solid var(--card-border);background:var(--surface-2);color:#0b1220}
+    select:focus-visible{outline:3px solid var(--accent);}
+
+    /* Grid de tarjetas */
     .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:18px}
-    .car-card{background:linear-gradient(180deg,white,#fbfdff);padding:14px;border-radius:14px;border:1px solid #eef6ff;box-shadow:0 6px 18px rgba(2,6,23,0.04)}
-    .car-card img{width:100%;height:160px;object-fit:cover;border-radius:10px}
-    .car-row{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
-    .price{font-weight:700}
-    .small{font-size:13px;color:var(--muted)}
-    /* visor 3D */
-    .viewer-area{margin-top:28px;background:var(--card);padding:18px;border-radius:14px;box-shadow:0 10px 40px rgba(2,6,23,0.03);display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+    .car-card{
+      background:var(--surface);border:1px solid var(--card-border);box-shadow:var(--card-shadow);color:var(--deep);
+      border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:10px;
+    }
+    .img-wrap{position:relative}
+    .img-wrap img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:10px;cursor:pointer}
+    /* Badge del “$” sobre la foto: evita que ocupe espacio abajo */
+    .badge-price{
+      position:absolute;right:10px;bottom:10px;
+      padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.92);
+      border:1px solid var(--card-border);font-weight:800;color:#0f1724;box-shadow:0 6px 16px rgba(0,0,0,.12)
+    }
+
+    /* Meta + acciones: altura consistente */
+    .meta{display:flex;flex-direction:column;gap:10px}
+    .title{font-weight:800;font-family:'Raleway',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .actions{display:flex;gap:8px}
+    .actions .btn{flex:1} /* ambos botones mismo ancho */
+
+    /* Botones outline en superficies claras */
+    .car-card .btn-outline, .card-feature .btn-outline, .viewer-area .btn-outline{
+      border:2px solid #2f3540; color:#0f1724; background:rgba(255,255,255,0.88); backdrop-filter:saturate(1.1);
+    }
+    .car-card .btn-outline:hover, .card-feature .btn-outline:hover, .viewer-area .btn-outline:hover{background:#fff;}
+
+    /* Detalles / visor */
+    .viewer-area{
+      margin-top:28px;background:var(--surface);padding:18px;border-radius:14px;
+      box-shadow:0 12px 40px rgba(0,0,0,.25);border:1px solid var(--card-border);
+      display:flex;gap:20px;align-items:center;flex-wrap:wrap;color:var(--deep)
+    }
     .viewer-info{flex:1}
     .viewer-3d{flex:1;min-width:320px}
-    model-viewer{width:100%;height:420px;border-radius:12px;background:linear-gradient(180deg,#f6fbff,#ffffff)}
-    /* footer */
+    #modelContainer{
+      position:relative;width:100%;height:420px;border-radius:12px;overflow:hidden;
+      background:#eef2f6;display:flex;align-items:center;justify-content:center;
+    }
+    #modelContainer img{width:100%;height:100%;object-fit:cover}
+    /* Flechas sobre foto grande */
+    .overlay-nav{position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between;padding:0 8px;pointer-events:none}
+    .overlay-btn{
+      pointer-events:auto;width:44px;height:44px;border-radius:999px;border:1px solid var(--card-border);
+      background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;
+      font-weight:800;font-size:20px;line-height:1;box-shadow:0 10px 24px rgba(0,0,0,.18);cursor:pointer;user-select:none
+    }
+    /* Miniaturas inferiores */
+    .thumb-strip{display:flex;gap:8px;overflow:auto;padding-top:10px}
+    .thumb-strip img{width:86px;height:60px;object-fit:cover;border-radius:8px;border:1px solid var(--card-border);cursor:pointer;flex:0 0 auto;opacity:.9}
+    .thumb-strip img.active{outline:2px solid var(--accent);opacity:1}
+
+    /* Footer y adorno de emojis */
     footer{margin-top:36px;text-align:center;color:var(--muted);font-size:13px;padding:28px 0}
-    /* animación coches cayendo (emojis) */
     .emoji-fall{pointer-events:none;position:fixed;inset:0;z-index:-1;overflow:hidden}
-    .emoji{position:absolute;font-size:24px;opacity:0.95;animation:fall linear infinite}
-    @keyframes fall{0%{transform:translateY(-20vh) rotate(0deg);opacity:0}10%{opacity:1}100%{transform:translateY(120vh) rotate(360deg);opacity:0}}
-    /* responsive */
-    @media (max-width:880px){ .hero{flex-direction:column}.card-feature{width:100%} model-viewer{height:300px} .main-title{font-size:32px}}
+    .emoji{position:absolute;font-size:24px;opacity:.28;animation:fall linear infinite;filter:saturate(.8)}
+    @keyframes fall{0%{transform:translateY(-20vh) rotate(0);opacity:0}10%{opacity:.28}100%{transform:translateY(120vh) rotate(360deg);opacity:0}}
+    @media (prefers-reduced-motion: reduce){.emoji{animation:none !important} html:focus-within{scroll-behavior:auto}}
+    @media (max-width:880px){.hero{flex-direction:column}.card-feature{width:100%}#modelContainer{height:300px}}
   </style>
 </head>
 <body>
-  <!-- Iconos animados (cochecitos cayendo) -->
+  <!-- Fondo decorativo -->
   <div class="emoji-fall" aria-hidden="true" id="emojiFall"></div>
 
   <div class="container">
+    <!-- Header -->
     <header>
       <div class="logo">
-        <div class="mark">A</div>
+        <div class="mark">
+          <img src="https://res.cloudinary.com/dut904eoa/image/upload/v1757019708/logo-apollo.png_ca7o3y.jpg" alt="Logo Apollo Automotive Store">
+        </div>
         <div>
           <div class="brand">Apollo Automotive Store</div>
           <div class="tag">Autos de lujo · juvenil · exclusivo · confianza 🔒</div>
@@ -84,253 +148,387 @@
       <div class="tag">Contacto: solo WhatsApp Business</div>
     </header>
 
-    <!-- HERO -->
+    <!-- Hero + filtros -->
     <section class="hero" aria-label="Hero">
       <div class="hero-left">
-        <h1 class="main-title">Apollo Automotive Store 🚘</h1>
-        <p class="subtitle">Autos de lujo con actitud joven y un look premium — inspirado por tiendas urbanas y feel de juego. Elegancia, seguridad y confianza.</p>
+        <h1 class="main-title">Apollo Automotive Store</h1>
+        <p class="subtitle">Autos de lujo con actitud joven — look premium, seguro y confiable.</p>
         <div class="cta-row">
-          <button class="btn btn-primary" onclick="scrollToSection('inventario')">Ver inventario</button>
-          <button class="btn btn-outline" onclick="scrollToSection('viewer')">Vista 3D</button>
+          <button class="btn btn-primary" id="btnInv">Ver inventario</button>
+          <button class="btn btn-outline" id="btnViewer">Detalles</button>
         </div>
 
-        <!-- FILTROS -->
+        <!-- Filtros simples -->
         <div class="filters" style="margin-top:18px;">
-          <select id="brandFilter" onchange="updateList()">
-            <option value="Todos">Marca: Todos</option>
-          </select>
-          <select id="modelFilter" onchange="updateList()">
-            <option value="Todos">Modelo: Todos</option>
-          </select>
-          <select id="sortOrder" onchange="updateList()">
-            <option value="mayor">Precio: Mayor a menor</option>
-            <option value="menor">Precio: Menor a mayor</option>
-          </select>
+          <select id="brandFilter"><option value="Todos">Marca: Todos</option></select>
+          <select id="modelFilter"><option value="Todos">Modelo: Todos</option></select>
         </div>
-
       </div>
 
-      <!-- Tarjeta destacada -->
-      <aside class="card-feature" aria-hidden="true">
-        <img id="featureImg" class="car-img" src="" alt="Coche destacado">
+      <!-- Destacada -->
+      <aside class="card-feature" aria-label="Coche destacado">
+        <img id="featureImg" class="car-img" src="" alt="Coche destacado" loading="lazy">
         <div style="margin-top:12px;display:flex;justify-content:space-between;align-items:center">
           <div>
-            <div id="featureBrand" class="small">Marca</div>
-            <div id="featureModel" style="font-weight:700;font-size:18px">Modelo</div>
+            <div id="featureBrand" class="tag" style="color:#5f6670">Marca</div>
+            <div id="featureModel" style="font-weight:800;font-size:18px;font-family:'Raleway',sans-serif;">Modelo</div>
           </div>
-          <div id="featurePrice" style="font-weight:800;color:var(--deep)">$0</div>
+          <div id="featurePrice" style="font-weight:800;color:var(--deep)">A consultar</div>
         </div>
         <div style="display:flex;gap:8px;margin-top:12px">
-          <button class="btn btn-primary" onclick="openViewer(selectedCar)">Vista 3D</button>
-          <button class="btn btn-outline" onclick="contactWhatsApp(selectedCar)">Contactar</button>
+          <button class="btn btn-primary" id="feature3dBtn">Detalles</button>
+          <button class="btn btn-outline" id="featureContactBtn">Contactar</button>
         </div>
       </aside>
     </section>
 
-    <!-- INVENTARIO -->
+    <!-- Inventario -->
     <main id="inventario" style="margin-top:18px">
-      <h2 style="margin:0 0 8px 0">Inventario</h2>
+      <h2 style="margin:0 0 8px 0;font-weight:800">Inventario</h2>
       <div class="grid" id="carsGrid" role="list"></div>
     </main>
 
-    <!-- VISOR 3D -->
+    <!-- Detalles / Visor -->
     <section id="viewer" class="viewer-area" style="display:none;">
       <div class="viewer-info">
-        <div id="viewBrand" class="small">Marca</div>
-        <div id="viewModel" style="font-weight:800;font-size:22px">Selecciona un auto</div>
-        <div id="viewPrice" style="margin-top:8px;font-weight:700;color:var(--deep)"></div>
-        <p id="viewDesc" class="small" style="margin-top:10px;color:var(--muted)"></p>
+        <div id="viewBrand" class="tag" style="color:#5f6670">Marca</div>
+        <div id="viewModel" style="font-weight:800;font-size:22px;font-family:'Raleway',sans-serif;">Selecciona un auto</div>
+        <div id="viewPrice" style="margin-top:8px;font-weight:800;color:var(--deep)"></div>
+        <p id="viewDesc" class="tag" style="margin-top:10px;color:#5f6670"></p>
         <div style="margin-top:14px;display:flex;gap:10px">
-          <button class="btn btn-primary" onclick="contactWhatsApp(selectedCar)">Contactar por WhatsApp</button>
-          <button class="btn btn-outline" onclick="closeViewer()">Cerrar</button>
+          <button class="btn btn-primary" id="viewerWhatsBtn">Contactar por WhatsApp</button>
+          <button class="btn btn-outline" id="viewerCloseBtn">Cerrar</button>
         </div>
       </div>
 
       <div class="viewer-3d">
-        <!-- Si no hay modelo .glb muestra una tarjeta de mensaje -->
-        <div id="modelContainer" style="width:100%;height:420px;border-radius:12px;overflow:hidden;background:#f2f8ff;display:flex;align-items:center;justify-content:center;">
-          <div id="modelPlaceholder" style="color:var(--muted);padding:12px;">Selecciona un auto para ver su modelo 3D (si el coche tiene .glb) 🛠️</div>
+        <!-- Foto grande con flechas si hay varias -->
+        <div id="modelContainer">
+          <div id="modelPlaceholder" style="color:#5f6670;padding:12px;">Selecciona un auto para ver sus fotos 📸</div>
         </div>
+        <!-- Miniaturas -->
+        <div id="thumbStrip" class="thumb-strip" aria-label="Galería de imágenes"></div>
       </div>
     </section>
 
+    <!-- Footer -->
     <footer>
       © <span id="year"></span> Apollo Automotive Store — Hecho con ❤️ · Contacto solo por WhatsApp Business.
     </footer>
   </div>
 
-  <script>
-  /* ============================
-     Datos de ejemplo — cambia por tus fichas reales
-     Para añadir modelos 3D sube archivos .glb a la carpeta /models en el repo
-     y usa la URL relativa: '/models/nombre.glb' (Netlify los servirá).
-     ============================ */
+  <noscript>Activa JavaScript para ver la galería y el visor.</noscript>
 
+  <script>
+  /* ============ Datos del inventario ============ */
   const CARS = [
     {
-      id:1, brand:'Aurelia', model:'Apex GT', price:125000, img:'https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1200&auto=format&fit=crop',
-      glb:'', // e.g. '/models/apexgt.glb'  -> agrega ruta si tienes el .glb
-      description:'Deportiva, líneas agresivas, interior premium. 🚗✨'
+      id:1, brand:'McLaren', model:'Spyder 2019',
+      price:null, priceText:'A consultar',
+      img:'https://res.cloudinary.com/dut904eoa/image/upload/v1757014173/carro1_qa9vfh.jpg',
+      gallery:[
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014173/carro_1_2_hdxwir.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014173/carro1_1_zlfkww.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014173/carro1_qa9vfh.jpg'
+      ],
+      glb:'',
+      description:'Factura de McLaren México · 6,500 km.'
     },
     {
-      id:2, brand:'Cerberus', model:'Luxor S', price:210000, img:'https://images.unsplash.com/photo-1541447271-2f21d0e2f7d0?q=80&w=1200&auto=format&fit=crop',
+      id:2, brand:'Audi', model:'R8 2017 (wide body)',
+      price:null, priceText:'$3,5K (precio cliente)',
+      img:'https://res.cloudinary.com/dut904eoa/image/upload/v1757014173/carro_2_zqqrui.jpg',
+      gallery:[ 'https://res.cloudinary.com/dut904eoa/image/upload/v1757014173/carro_2_zqqrui.jpg' ],
       glb:'',
-      description:'Sedán ejecutivo, tecnología de punta y confort. 🧭'
+      description:'Wide body, coilovers.'
     },
     {
-      id:3, brand:'Aurelia', model:'Roadmaster', price:98000, img:'https://images.unsplash.com/photo-1511919884226-fd3cad34687c?q=80&w=1200&auto=format&fit=crop',
+      id:3, brand:'Porsche', model:'Cayenne GTS 2018',
+      price:null, priceText:'A consultar',
+      img:'https://res.cloudinary.com/dut904eoa/image/upload/v1757014321/IMG-20250828-WA0020_olh9nm.jpg',
+      gallery:[
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014321/IMG-20250828-WA0020_olh9nm.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014321/IMG-20250828-WA0021_gwrbue.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014322/IMG-20250828-WA0022_q3nuon.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014322/IMG-20250828-WA0023_gpctwp.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014323/IMG-20250828-WA0025_lckll8.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014323/IMG-20250828-WA0024_jogcet.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014324/IMG-20250828-WA0027_bl9a1e.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014327/IMG-20250828-WA0026_wj0ieg.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014328/IMG-20250828-WA0029_emugyk.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014330/IMG-20250828-WA0030_hxld0n.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014331/IMG-20250828-WA0032_w0jnon.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014333/IMG-20250828-WA0033_udazwh.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014333/IMG-20250828-WA0035_btyxbb.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014334/IMG-20250828-WA0034_rjjdsy.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014337/IMG-20250828-WA0036_jtku8c.jpg'
+      ],
       glb:'',
-      description:'Convertible con mucha personalidad. 🌬️'
+      description:'Cayenne GTS 2018.'
+    },
+    {
+      id:4, brand:'Audi', model:'S8 2009 V10',
+      price:null, priceText:'A consultar',
+      img:'https://res.cloudinary.com/dut904eoa/image/upload/v1757014342/IMG-20250828-WA0041_ukdsn2.jpg',
+      gallery:[
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014337/IMG-20250828-WA0037_tmflcj.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014338/IMG-20250828-WA0038_yd4rsu.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014341/IMG-20250828-WA0039_cie0sa.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014341/IMG-20250828-WA0040_folara.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014342/IMG-20250828-WA0041_ukdsn2.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014343/IMG-20250828-WA0043_zovcqy.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014345/IMG-20250828-WA0045_jxn9vr.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014346/IMG-20250828-WA0046_ftbvyh.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014347/IMG-20250828-WA0047_fi908r.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014350/IMG-20250828-WA0048_vuudxp.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014351/IMG-20250828-WA0051_nnjpdp.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014350/IMG-20250828-WA0052_be4nmp.jpg'
+      ],
+      glb:'',
+      description:'S8 5.2 V10 quattro · full equipo · interiores fibra de carbono, suspensión de aire, carplay, runflat, etc.'
+    },
+    {
+      id:5, brand:'Porsche', model:'911 Carrera 4S 2022',
+      price:null, priceText:'A consultar',
+      img:'https://res.cloudinary.com/dut904eoa/image/upload/v1757014369/IMG-20250902-WA0008_tkm7wk.jpg',
+      gallery:[
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014369/IMG-20250902-WA0008_tkm7wk.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014373/IMG-20250902-WA0011_dmgcbd.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014373/IMG-20250902-WA0012_ji00hl.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014374/IMG-20250902-WA0013_rwl43f.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014378/IMG-20250902-WA0015_ejxiwr.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014379/IMG-20250902-WA0014_w1utvn.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014383/IMG-20250902-WA0016_ybh4fo.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014386/IMG-20250902-WA0017_uuzq6s.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014388/IMG-20250902-WA0010_v8ykim.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014389/IMG-20250902-WA0020_nvvbch.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014389/IMG-20250902-WA0021_zrvjda.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014393/IMG-20250902-WA0025_h8niif.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014394/IMG-20250902-WA0023_stsjon.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014395/IMG-20250828-WA0031_ewpudj.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014399/IMG-20250902-WA0022_rowglt.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014399/IMG-20250902-WA0024_d8yakq.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014403/IMG-20250902-WA0018_lgzv9x.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014408/IMG-20250902-WA0019_uz5oo5.jpg'
+      ],
+      glb:'',
+      description:'Carrera 4S 2022.'
+    },
+    {
+      id:6, brand:'Porsche', model:'911 GTS 2023',
+      price:null, priceText:'A consultar',
+      img:'https://res.cloudinary.com/dut904eoa/image/upload/v1757014400/IMG-20250902-WA0001_jijxp9.jpg',
+      gallery:[
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014400/IMG-20250902-WA0001_jijxp9.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014384/IMG-20250902-WA0004_e3ejiv.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014379/IMG-20250902-WA0003_zoqc5e.jpg'
+      ],
+      glb:'',
+      description:'9,000 km · GDL.'
     }
   ];
 
-  // Cambia por tu número de WhatsApp Business en formato internacional sin + ni ceros iniciales.
-  // Ejemplo México: 5213312345678
+  /* ============ Estado / helpers ============ */
   const WHATSAPP_NUMBER = '5213312345678';
-
-  // Estado simple
   let selectedCar = CARS[0];
-
-  // Inicialización DOM
+  let selectedPhotoIndex = 0;
   document.getElementById('year').textContent = new Date().getFullYear();
 
-  // Poblamos filtros (marca y modelo únicos)
-  function populateFilters(){
-    const brands = ['Todos', ...new Set(CARS.map(c => c.brand))];
-    const models = ['Todos', ...new Set(CARS.map(c => c.model))];
-    const bf = document.getElementById('brandFilter');
-    const mf = document.getElementById('modelFilter');
-    brands.forEach(b=>{
-      const o=document.createElement('option'); o.value=b; o.textContent=b; bf.appendChild(o);
-    });
-    models.forEach(m=>{
-      const o=document.createElement('option'); o.value=m; o.textContent=m; mf.appendChild(o);
-    });
+  function priceLabel(car){
+    // Para destacada/visor: muestra precio real o texto
+    if(typeof car.price === 'number' && !isNaN(car.price)) return '$' + car.price.toLocaleString();
+    return car.priceText || 'A consultar';
   }
 
-  // Renderizamos la lista de coches
+  /* ============ Filtros ============ */
+  function populateFilters(){
+    const bf = document.getElementById('brandFilter');
+    const mf = document.getElementById('modelFilter');
+    const brands = ['Todos', ...new Set(CARS.map(c => c.brand))];
+    const models = ['Todos', ...new Set(CARS.map(c => c.model))];
+    brands.forEach(b=>{ const o=document.createElement('option'); o.value=b; o.textContent=b; bf.appendChild(o); });
+    models.forEach(m=>{ const o=document.createElement('option'); o.value=m; o.textContent=m; mf.appendChild(o); });
+  }
+
+  /* ============ Tarjeta ============ */
+  function carCard(car){
+    const card = document.createElement('article');
+    card.className = 'car-card';
+
+    // Imagen con badge del "$"
+    const wrap = document.createElement('div');
+    wrap.className = 'img-wrap';
+    const img = document.createElement('img');
+    img.src = car.img; img.alt = `${car.brand} ${car.model}`; img.loading = 'lazy';
+    img.addEventListener('click', () => openViewer(car.id));
+    const badge = document.createElement('div'); badge.className='badge-price'; badge.textContent='$';
+    wrap.append(img, badge);
+    card.appendChild(wrap);
+
+    // Meta + acciones (título en una línea y botones iguales)
+    const meta = document.createElement('div'); meta.className='meta';
+    const title = document.createElement('div'); title.className='title'; title.textContent = `${car.brand} · ${car.model}`;
+    const actions = document.createElement('div'); actions.className='actions';
+    const bDetails = document.createElement('button'); bDetails.className='btn btn-primary'; bDetails.type='button'; bDetails.textContent='Detalles';
+    bDetails.addEventListener('click', () => openViewer(car.id));
+    const bwa = document.createElement('button'); bwa.className='btn btn-outline'; bwa.type='button'; bwa.textContent='Contactar';
+    bwa.addEventListener('click', () => contactWhatsApp(car.id));
+    actions.append(bDetails, bwa);
+    meta.append(title, actions);
+    card.appendChild(meta);
+
+    return card;
+  }
+
+  /* ============ Listado (sin orden por precio) ============ */
   function updateList(){
     const bf = document.getElementById('brandFilter').value;
     const mf = document.getElementById('modelFilter').value;
-    const so = document.getElementById('sortOrder').value;
+
     let list = CARS.slice();
     if(bf !== 'Todos') list = list.filter(c => c.brand === bf);
     if(mf !== 'Todos') list = list.filter(c => c.model === mf);
-    list.sort((a,b)=> so === 'mayor' ? b.price - a.price : a.price - b.price);
 
     const grid = document.getElementById('carsGrid');
     grid.innerHTML = '';
-    list.forEach(car=>{
-      const card = document.createElement('article');
-      card.className = 'car-card';
-      card.innerHTML = `
-        <img src="${car.img}" alt="${car.brand} ${car.model}">
-        <div style="margin-top:8px;display:flex;justify-content:space-between;align-items:center">
-          <div>
-            <div style="font-weight:600">${car.brand} · ${car.model}</div>
-            <div class="small">${car.description}</div>
-          </div>
-          <div style="text-align:right">
-            <div class="price">$${car.price.toLocaleString()}</div>
-            <div style="margin-top:8px;display:flex;gap:6px;justify-content:flex-end">
-              <button class="btn btn-primary" onclick="openViewer(${car.id})">3D</button>
-              <button class="btn btn-outline" onclick="contactWhatsApp(${car.id})">Contactar</button>
-            </div>
-          </div>
-        </div>
-      `;
-      grid.appendChild(card);
-    });
+    list.forEach(car => grid.appendChild(carCard(car)));
 
-    // Actualiza tarjeta destacada con el primer coche visible o con el seleccionado
-    const first = list[0] || CARS[0];
+    // Mantener destacada coherente
+    const currentId = selectedCar?.id;
+    const first = list.find(c => c.id === currentId) || list[0] || CARS[0];
     selectedCar = first;
     updateFeatureCard(first);
   }
 
-  // Actualiza tarjeta destacada
+  /* ============ Destacada ============ */
   function updateFeatureCard(car){
-    document.getElementById('featureImg').src = car.img;
+    const img = document.getElementById('featureImg');
+    img.src = car.img; img.alt = `${car.brand} ${car.model}`; img.loading = 'lazy';
     document.getElementById('featureBrand').textContent = car.brand;
     document.getElementById('featureModel').textContent = car.model;
-    document.getElementById('featurePrice').textContent = '$' + car.price.toLocaleString();
+    document.getElementById('featurePrice').textContent = priceLabel(car);
   }
 
-  // Abrir visor 3D pasando ID o objeto
+  /* ============ Visor ============ */
+  function renderMainPhoto(car, index){
+    const pics = Array.isArray(car.gallery) && car.gallery.length ? car.gallery : [car.img];
+    const container = document.getElementById('modelContainer');
+    container.innerHTML = '';
+
+    const im = document.createElement('img');
+    im.src = pics[index]; im.alt = `${car.brand} ${car.model} - foto ${index+1}`;
+    im.loading = 'lazy';
+    container.appendChild(im);
+
+    if(pics.length > 1){
+      const nav = document.createElement('div'); nav.className = 'overlay-nav';
+      const prev = document.createElement('button'); prev.className = 'overlay-btn'; prev.setAttribute('aria-label','Foto anterior'); prev.textContent='‹';
+      prev.onclick = () => { selectedPhotoIndex = (selectedPhotoIndex - 1 + pics.length) % pics.length; renderMainPhoto(car, selectedPhotoIndex); renderThumbs(car); };
+      const next = document.createElement('button'); next.className = 'overlay-btn'; next.setAttribute('aria-label','Foto siguiente'); next.textContent='›';
+      next.onclick = () => { selectedPhotoIndex = (selectedPhotoIndex + 1) % pics.length; renderMainPhoto(car, selectedPhotoIndex); renderThumbs(car); };
+      nav.append(prev, next);
+      container.appendChild(nav);
+    }
+  }
+
+  function renderThumbs(car){
+    const strip = document.getElementById('thumbStrip');
+    strip.innerHTML = '';
+    const pics = Array.isArray(car.gallery) && car.gallery.length ? car.gallery : [car.img];
+
+    pics.forEach((url, idx) => {
+      const t = document.createElement('img');
+      t.src = url; t.alt = `${car.brand} ${car.model} - miniatura ${idx+1}`; t.loading='lazy';
+      if(idx === selectedPhotoIndex) t.classList.add('active');
+      t.addEventListener('click', () => { selectedPhotoIndex = idx; renderMainPhoto(car, selectedPhotoIndex); renderThumbs(car); });
+      strip.appendChild(t);
+    });
+  }
+
   function openViewer(idOrObj){
     const car = typeof idOrObj === 'object' ? idOrObj : CARS.find(c=>c.id === idOrObj);
     if(!car) return;
-    selectedCar = car;
-    document.getElementById('viewer').style.display = 'flex';
+    selectedCar = car; selectedPhotoIndex = 0;
+
+    const viewer = document.getElementById('viewer');
+    viewer.style.display = 'flex';
     document.getElementById('viewBrand').textContent = car.brand;
     document.getElementById('viewModel').textContent = car.model;
-    document.getElementById('viewPrice').textContent = '$' + car.price.toLocaleString();
-    document.getElementById('viewDesc').textContent = car.description;
+    document.getElementById('viewPrice').textContent = priceLabel(car);
+    document.getElementById('viewDesc').textContent = car.description || '';
 
-    const container = document.getElementById('modelContainer');
-    container.innerHTML = ''; // limpiamos
+    renderMainPhoto(car, selectedPhotoIndex);
+    renderThumbs(car);
 
-    if(car.glb && car.glb.trim() !== ''){
-      // Creamos el <model-viewer>
-      const mv = document.createElement('model-viewer');
-      mv.setAttribute('src', car.glb);
-      mv.setAttribute('alt', `${car.brand} ${car.model}`);
-      mv.setAttribute('camera-controls', '');
-      mv.setAttribute('auto-rotate', '');
-      mv.style.width = '100%';
-      mv.style.height = '420px';
-      container.appendChild(mv);
-    } else {
-      // Si no hay .glb mostramos la imagen
-      container.innerHTML = `<img src="${car.img}" alt="${car.brand} ${car.model}" style="width:100%;height:100%;object-fit:cover">`;
-    }
-
-    // Smooth scroll a la sección
-    document.getElementById('viewer').scrollIntoView({behavior:'smooth', block:'center'});
+    viewer.scrollIntoView({behavior:'smooth', block:'center'});
   }
 
   function closeViewer(){
     document.getElementById('viewer').style.display = 'none';
-    document.getElementById('modelContainer').innerHTML = '<div id="modelPlaceholder" style="color:var(--muted);padding:12px;">Selecciona un auto para ver su modelo 3D (si el coche tiene .glb) 🛠️</div>';
+    document.getElementById('modelContainer').innerHTML =
+      '<div id="modelPlaceholder" style="color:#5f6670;padding:12px;">Selecciona un auto para ver sus fotos 📸</div>';
+    document.getElementById('thumbStrip').innerHTML = '';
   }
 
-  // Redirección a WhatsApp con mensaje prellenado
+  /* ============ Acciones ============ */
   function contactWhatsApp(idOrObj){
     const car = typeof idOrObj === 'object' ? idOrObj : CARS.find(c=>c.id === idOrObj) || selectedCar;
     if(!car) return;
-    const text = encodeURIComponent(`Hola 👋 estoy interesado en el ${car.brand} ${car.model} (ID:${car.id}) - Precio: $${car.price.toLocaleString()}. ¿Me pueden dar más detalles?`);
+    const text = encodeURIComponent(`Hola 👋 estoy interesado en el ${car.brand} ${car.model} (ID:${car.id}). ¿Me pueden dar más detalles?`);
     const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${text}`;
-    window.open(url, '_blank');
+    const w = window.open(url, '_blank', 'noopener,noreferrer'); if (w) w.opener = null;
   }
+  function scrollToSection(id){ document.getElementById(id).scrollIntoView({behavior:'smooth'}); }
 
-  // Scroll helper
-  function scrollToSection(id){
-    document.getElementById(id).scrollIntoView({behavior:'smooth'});
-  }
-
-  // Generador de emojis cayendo (estética)
+  /* ============ Adorno: emojis cayendo ============ */
   function startEmojiFall(){
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const parent = document.getElementById('emojiFall');
     const emojis = ['🚗','🚘','🏎️','🚙','🛻'];
     for(let i=0;i<12;i++){
-      const s = document.createElement('div');
-      s.className='emoji';
+      const s = document.createElement('div'); s.className='emoji';
       s.textContent = emojis[Math.floor(Math.random()*emojis.length)];
-      const left = Math.floor(Math.random()*100);
-      const dur = 6 + Math.random()*8;
-      const delay = -Math.random()*10;
-      s.style.left = left + '%';
-      s.style.top = (Math.random()*-30) + 'vh';
-      s.style.animationDuration = dur + 's';
-      s.style.animationDelay = delay + 's';
+      const left = Math.floor(Math.random()*100), dur = 6 + Math.random()*8, delay = -Math.random()*10;
+      s.style.left = left + '%'; s.style.top = (Math.random()*-30) + 'vh';
+      s.style.animationDuration = dur + 's'; s.style.animationDelay = delay + 's';
       parent.appendChild(s);
     }
   }
 
-  // Init
+  /* ============ Listeners ============ */
+  function attachListeners(){
+    document.getElementById('btnInv').addEventListener('click', () => scrollToSection('inventario'));
+    document.getElementById('btnViewer').addEventListener('click', () => scrollToSection('viewer'));
+
+    document.getElementById('feature3dBtn').addEventListener('click', () => openViewer(selectedCar));
+    document.getElementById('featureContactBtn').addEventListener('click', () => contactWhatsApp(selectedCar));
+
+    document.getElementById('viewerCloseBtn').addEventListener('click', closeViewer);
+    document.getElementById('viewerWhatsBtn').addEventListener('click', () => contactWhatsApp(selectedCar));
+
+    document.getElementById('brandFilter').addEventListener('change', updateList);
+    document.getElementById('modelFilter').addEventListener('change', updateList);
+
+    // Teclado: Esc cierra; ← → navegan fotos si hay varias
+    document.addEventListener('keydown', e => {
+      if (document.getElementById('viewer').style.display === 'none') return;
+      if (e.key === 'Escape') closeViewer();
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        const pics = (selectedCar.gallery && selectedCar.gallery.length) ? selectedCar.gallery : [selectedCar.img];
+        if(pics.length <= 1) return;
+        if (e.key === 'ArrowLeft') selectedPhotoIndex = (selectedPhotoIndex - 1 + pics.length) % pics.length;
+        if (e.key === 'ArrowRight') selectedPhotoIndex = (selectedPhotoIndex + 1) % pics.length;
+        renderMainPhoto(selectedCar, selectedPhotoIndex);
+        renderThumbs(selectedCar);
+      }
+    });
+  }
+
+  /* ============ Init ============ */
   populateFilters();
   updateList();
   startEmojiFall();
+  attachListeners();
   </script>
 </body>
 </html>
