@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Raleway:wght@600;700;800&display=swap" rel="stylesheet">
 
-  <!-- model-viewer (por si luego usas 3D) -->
+  <!-- model-viewer (por si luego activas 3D) -->
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
   <style>
@@ -33,12 +33,12 @@
     }
     h1,h2,h3{font-family:'Raleway',sans-serif; letter-spacing:.3px;}
 
-    /* Layout y header */
+    /* Layout y header del logo */
     .container{max-width:1200px;margin:0 auto;padding:28px;}
     header{display:flex;gap:24px;align-items:center;justify-content:space-between;padding:18px 0;}
     .logo{display:flex;gap:12px;align-items:center}
     .logo .mark{
-      width:150px;height:75px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;
+      width:150px;height:55px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;
       box-shadow:0 10px 30px rgba(14,165,255,0.2); overflow:hidden; border:1px solid rgba(255,255,255,.25);
     }
     .logo .mark img{width:100%;height:100%;object-fit:cover}
@@ -76,20 +76,29 @@
     }
     .img-wrap{position:relative}
     .img-wrap img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:10px;cursor:pointer}
-    /* Badge del “$” sobre la foto: evita que ocupe espacio abajo */
+
+    /* Badge del “$” sobre la foto (sin números) */
     .badge-price{
       position:absolute;right:10px;bottom:10px;
       padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.92);
       border:1px solid var(--card-border);font-weight:800;color:#0f1724;box-shadow:0 6px 16px rgba(0,0,0,.12)
     }
 
-    /* Meta + acciones: altura consistente */
+    /* Estado (sold/reserved) en tarjeta */
+    .status-pill{
+      position:absolute;left:10px;top:10px;padding:6px 10px;border-radius:999px;font-weight:800;color:#0f1724;
+      border:1px solid var(--card-border);background:rgba(255,255,255,.92);box-shadow:0 6px 16px rgba(0,0,0,.12)
+    }
+    .status-pill.sold, .status-pill.vendido{background:#ffd6d6;border-color:#ff9b9b;color:#7a0000}       /* NO DISPONIBLE */
+    .status-pill.reserved, .status-pill.reservado{background:#fff1c2;border-color:#ffd76e;color:#6b4b00}  /* RESERVADO */
+
+    /* Meta + acciones */
     .meta{display:flex;flex-direction:column;gap:10px}
     .title{font-weight:800;font-family:'Raleway',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .actions{display:flex;gap:8px}
-    .actions .btn{flex:1} /* ambos botones mismo ancho */
+    .actions .btn{flex:1} /* botones mismo ancho */
 
-    /* Botones outline en superficies claras */
+    /* Botones outline legibles en superficies claras */
     .car-card .btn-outline, .card-feature .btn-outline, .viewer-area .btn-outline{
       border:2px solid #2f3540; color:#0f1724; background:rgba(255,255,255,0.88); backdrop-filter:saturate(1.1);
     }
@@ -138,7 +147,7 @@
     <header>
       <div class="logo">
         <div class="mark">
-          <img src="https://res.cloudinary.com/dut904eoa/image/upload/v1757019708/logo-apollo.png_ca7o3y.jpg" alt="Logo Apollo Automotive Store">
+          <img src="https://res.cloudinary.com/dut904eoa/image/upload/v1757210548/logo-apollo.png_mvxgi5.jpg" alt="Logo Apollo Automotive Store">
         </div>
         <div>
           <div class="brand">Apollo Automotive Store</div>
@@ -148,14 +157,13 @@
       <div class="tag">Contacto: solo WhatsApp Business</div>
     </header>
 
-    <!-- Hero + filtros -->
+    <!-- Hero + filtros (botón Detalles del hero eliminado) -->
     <section class="hero" aria-label="Hero">
       <div class="hero-left">
         <h1 class="main-title">Apollo Automotive Store</h1>
         <p class="subtitle">Autos de lujo con actitud joven — look premium, seguro y confiable.</p>
         <div class="cta-row">
           <button class="btn btn-primary" id="btnInv">Ver inventario</button>
-          <button class="btn btn-outline" id="btnViewer">Detalles</button>
         </div>
 
         <!-- Filtros simples -->
@@ -165,7 +173,7 @@
         </div>
       </div>
 
-      <!-- Destacada -->
+      <!-- Destacada: sin precio visible -->
       <aside class="card-feature" aria-label="Coche destacado">
         <img id="featureImg" class="car-img" src="" alt="Coche destacado" loading="lazy">
         <div style="margin-top:12px;display:flex;justify-content:space-between;align-items:center">
@@ -173,7 +181,6 @@
             <div id="featureBrand" class="tag" style="color:#5f6670">Marca</div>
             <div id="featureModel" style="font-weight:800;font-size:18px;font-family:'Raleway',sans-serif;">Modelo</div>
           </div>
-          <div id="featurePrice" style="font-weight:800;color:var(--deep)">A consultar</div>
         </div>
         <div style="display:flex;gap:8px;margin-top:12px">
           <button class="btn btn-primary" id="feature3dBtn">Detalles</button>
@@ -193,7 +200,6 @@
       <div class="viewer-info">
         <div id="viewBrand" class="tag" style="color:#5f6670">Marca</div>
         <div id="viewModel" style="font-weight:800;font-size:22px;font-family:'Raleway',sans-serif;">Selecciona un auto</div>
-        <div id="viewPrice" style="margin-top:8px;font-weight:800;color:var(--deep)"></div>
         <p id="viewDesc" class="tag" style="margin-top:10px;color:#5f6670"></p>
         <div style="margin-top:14px;display:flex;gap:10px">
           <button class="btn btn-primary" id="viewerWhatsBtn">Contactar por WhatsApp</button>
@@ -202,7 +208,7 @@
       </div>
 
       <div class="viewer-3d">
-        <!-- Foto grande con flechas si hay varias -->
+        <!-- Foto grande con flechas -->
         <div id="modelContainer">
           <div id="modelPlaceholder" style="color:#5f6670;padding:12px;">Selecciona un auto para ver sus fotos 📸</div>
         </div>
@@ -220,270 +226,331 @@
   <noscript>Activa JavaScript para ver la galería y el visor.</noscript>
 
   <script>
-  /* ============ Datos del inventario ============ */
-  const CARS = [
+  /* ============================================================
+     INVENTARIO (claro y fácil de editar)
+     - estado: 'disponible' | 'reservado' | 'vendido'
+       -> pinta RESERVADO / NO DISPONIBLE en la tarjeta.
+     - imagen: portada de la tarjeta.
+     - galeria: arreglo de URLs (todas tus fotos ya editadas).
+     ============================================================ */
+  const AUTOS = [
+    /* Tarjeta del auto #1 */
     {
-      id:1, brand:'McLaren', model:'Spyder 2019',
-      price:null, priceText:'A consultar',
-      img:'https://res.cloudinary.com/dut904eoa/image/upload/v1757014173/carro1_qa9vfh.jpg',
-      gallery:[
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014173/carro_1_2_hdxwir.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014173/carro1_1_zlfkww.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014173/carro1_qa9vfh.jpg'
+      id:1,
+      estado:'disponible',
+      marca:'McLaren',
+      modelo:'Spyder 2019',
+      imagen:'https://res.cloudinary.com/dut904eoa/image/upload/v1757210526/carro1_1_z6sfnn.jpg',
+      galeria:[
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210526/carro1_1_z6sfnn.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210525/carro_1_2_mewoli.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210525/Imagen_de_WhatsApp_2025-09-06_a_las_18.15.31_d060aeb7_yiwtvg.jpg'
       ],
-      glb:'',
-      description:'Factura de McLaren México · 6,500 km.'
+      descripcion:'Factura de McLaren México · 6,500 km.'
     },
+    /* Tarjeta del auto #2 */
     {
-      id:2, brand:'Audi', model:'R8 2017 (wide body)',
-      price:null, priceText:'$3,5K (precio cliente)',
-      img:'https://res.cloudinary.com/dut904eoa/image/upload/v1757014173/carro_2_zqqrui.jpg',
-      gallery:[ 'https://res.cloudinary.com/dut904eoa/image/upload/v1757014173/carro_2_zqqrui.jpg' ],
-      glb:'',
-      description:'Wide body, coilovers.'
-    },
-    {
-      id:3, brand:'Porsche', model:'Cayenne GTS 2018',
-      price:null, priceText:'A consultar',
-      img:'https://res.cloudinary.com/dut904eoa/image/upload/v1757014321/IMG-20250828-WA0020_olh9nm.jpg',
-      gallery:[
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014321/IMG-20250828-WA0020_olh9nm.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014321/IMG-20250828-WA0021_gwrbue.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014322/IMG-20250828-WA0022_q3nuon.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014322/IMG-20250828-WA0023_gpctwp.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014323/IMG-20250828-WA0025_lckll8.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014323/IMG-20250828-WA0024_jogcet.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014324/IMG-20250828-WA0027_bl9a1e.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014327/IMG-20250828-WA0026_wj0ieg.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014328/IMG-20250828-WA0029_emugyk.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014330/IMG-20250828-WA0030_hxld0n.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014331/IMG-20250828-WA0032_w0jnon.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014333/IMG-20250828-WA0033_udazwh.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014333/IMG-20250828-WA0035_btyxbb.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014334/IMG-20250828-WA0034_rjjdsy.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014337/IMG-20250828-WA0036_jtku8c.jpg'
+      id:2,
+      estado:'disponible',
+      marca:'Audi',
+      modelo:'R8 2017 (wide body)',
+      imagen:'https://res.cloudinary.com/dut904eoa/image/upload/v1757210526/carro_2_ifbeix.jpg',
+      galeria:[
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210526/carro_2_ifbeix.jpg'
       ],
-      glb:'',
-      description:'Cayenne GTS 2018.'
+      descripcion:'Wide body, coilovers.'
     },
+    /* Tarjeta del auto #3 */
     {
-      id:4, brand:'Audi', model:'S8 2009 V10',
-      price:null, priceText:'A consultar',
-      img:'https://res.cloudinary.com/dut904eoa/image/upload/v1757014342/IMG-20250828-WA0041_ukdsn2.jpg',
-      gallery:[
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014337/IMG-20250828-WA0037_tmflcj.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014338/IMG-20250828-WA0038_yd4rsu.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014341/IMG-20250828-WA0039_cie0sa.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014341/IMG-20250828-WA0040_folara.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014342/IMG-20250828-WA0041_ukdsn2.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014343/IMG-20250828-WA0043_zovcqy.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014345/IMG-20250828-WA0045_jxn9vr.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014346/IMG-20250828-WA0046_ftbvyh.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014347/IMG-20250828-WA0047_fi908r.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014350/IMG-20250828-WA0048_vuudxp.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014351/IMG-20250828-WA0051_nnjpdp.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014350/IMG-20250828-WA0052_be4nmp.jpg'
+      id:3,
+      estado:'disponible',
+      marca:'Porsche',
+      modelo:'Cayenne GTS 2018',
+      imagen:'https://res.cloudinary.com/dut904eoa/image/upload/v1757210526/Imagen_de_WhatsApp_2025-09-06_a_las_19.35.06_b5dd9494_myj54r.jpg',
+      galeria:[
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210526/Imagen_de_WhatsApp_2025-09-06_a_las_19.35.06_b5dd9494_myj54r.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210525/Imagen_de_WhatsApp_2025-09-06_a_las_19.35.06_9772495a_v9khex.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210525/Imagen_de_WhatsApp_2025-09-06_a_las_19.35.06_83def8a6_m96zp1.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210528/Imagen_de_WhatsApp_2025-09-06_a_las_19.35.06_dd0ab9ff_ve9oe1.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210528/Imagen_de_WhatsApp_2025-09-06_a_las_19.35.06_c4084cb0_tac51o.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210529/IMG-20250828-WA0023_d6tsdr.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210529/IMG-20250828-WA0027_u2sb2p.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210529/Imagen_de_WhatsApp_2025-09-06_a_las_19.35.06_f5d61566_ldhva5.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210529/IMG-20250828-WA0028_hs79r0.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210530/IMG-20250828-WA0029_zq6onr.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210530/IMG-20250828-WA0030_ttdtgz.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210530/IMG-20250828-WA0031_dumsfd.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210531/IMG-20250828-WA0032_n7icv2.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210531/IMG-20250828-WA0033_vy10b0.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210531/IMG-20250828-WA0034_c1cgss.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210531/IMG-20250828-WA0035_ypcv72.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210532/IMG-20250828-WA0036_lidlzr.jpg'
       ],
-      glb:'',
-      description:'S8 5.2 V10 quattro · full equipo · interiores fibra de carbono, suspensión de aire, carplay, runflat, etc.'
+      descripcion:'Cayenne GTS 2018.'
     },
+    /* Tarjeta del auto #4 */
     {
-      id:5, brand:'Porsche', model:'911 Carrera 4S 2022',
-      price:null, priceText:'A consultar',
-      img:'https://res.cloudinary.com/dut904eoa/image/upload/v1757014369/IMG-20250902-WA0008_tkm7wk.jpg',
-      gallery:[
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014369/IMG-20250902-WA0008_tkm7wk.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014373/IMG-20250902-WA0011_dmgcbd.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014373/IMG-20250902-WA0012_ji00hl.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014374/IMG-20250902-WA0013_rwl43f.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014378/IMG-20250902-WA0015_ejxiwr.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014379/IMG-20250902-WA0014_w1utvn.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014383/IMG-20250902-WA0016_ybh4fo.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014386/IMG-20250902-WA0017_uuzq6s.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014388/IMG-20250902-WA0010_v8ykim.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014389/IMG-20250902-WA0020_nvvbch.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014389/IMG-20250902-WA0021_zrvjda.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014393/IMG-20250902-WA0025_h8niif.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014394/IMG-20250902-WA0023_stsjon.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014395/IMG-20250828-WA0031_ewpudj.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014399/IMG-20250902-WA0022_rowglt.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014399/IMG-20250902-WA0024_d8yakq.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014403/IMG-20250902-WA0018_lgzv9x.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014408/IMG-20250902-WA0019_uz5oo5.jpg'
+      id:4,
+      estado:'disponible',
+      marca:'Audi',
+      modelo:'S8 2009 V10',
+      imagen:'https://res.cloudinary.com/dut904eoa/image/upload/v1757210532/Imagen_de_WhatsApp_2025-09-06_a_las_19.35.03_a6658e07_ld9sq1.jpg',
+      galeria:[
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210532/Imagen_de_WhatsApp_2025-09-06_a_las_19.35.03_a6658e07_ld9sq1.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210533/Imagen_de_WhatsApp_2025-09-06_a_las_19.35.05_468ba52c_ryuwzt.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210533/Imagen_de_WhatsApp_2025-09-06_a_las_19.35.04_abb891ba_udarrt.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210533/Imagen_de_WhatsApp_2025-09-06_a_las_19.35.05_17cca888_ntw2ba.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210532/Imagen_de_WhatsApp_2025-09-06_a_las_19.35.04_7e181e3c_cttch1.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210532/Imagen_de_WhatsApp_2025-09-06_a_las_19.35.04_2146be18_ltrwvu.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210533/Imagen_de_WhatsApp_2025-09-06_a_las_19.35.05_b25ed237_rea8sh.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210534/IMG-20250828-WA0037_pj3kli.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210534/IMG-20250828-WA0038_kk3ksu.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210534/IMG-20250828-WA0039_aw4r4u.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210535/IMG-20250828-WA0040_rywknt.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210535/IMG-20250828-WA0044_ikikty.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210535/IMG-20250828-WA0048_qcojbx.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210535/IMG-20250828-WA0049_lskezw.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210536/IMG-20250828-WA0051_qwcejr.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210536/IMG-20250828-WA0052_b57fxz.jpg'
       ],
-      glb:'',
-      description:'Carrera 4S 2022.'
+      descripcion:'S8 5.2 V10 quattro · full equipo · interiores fibra de carbono, suspensión de aire, carplay, runflat, etc.'
     },
+    /* Tarjeta del auto #5 */
     {
-      id:6, brand:'Porsche', model:'911 GTS 2023',
-      price:null, priceText:'A consultar',
-      img:'https://res.cloudinary.com/dut904eoa/image/upload/v1757014400/IMG-20250902-WA0001_jijxp9.jpg',
-      gallery:[
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014400/IMG-20250902-WA0001_jijxp9.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014384/IMG-20250902-WA0004_e3ejiv.jpg',
-        'https://res.cloudinary.com/dut904eoa/image/upload/v1757014379/IMG-20250902-WA0003_zoqc5e.jpg'
+      id:5,
+      estado:'disponible',
+      marca:'Porsche',
+      modelo:'911 Carrera 4S 2022',
+      imagen:'https://res.cloudinary.com/dut904eoa/image/upload/v1757210540/IMG-20250902-WA0008_vnywrx.jpg',
+      galeria:[
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210540/IMG-20250902-WA0008_vnywrx.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210541/IMG-20250902-WA0010_lhmzbc.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210541/IMG-20250902-WA0011_llyday.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210541/IMG-20250902-WA0012_ba4kyn.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210542/IMG-20250902-WA0013_o1faum.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210542/IMG-20250902-WA0015_attuh4.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210542/IMG-20250902-WA0014_wndobe.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210542/IMG-20250902-WA0016_vbawy3.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210543/IMG-20250902-WA0017_ugg59x.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210543/IMG-20250902-WA0018_s2wtym.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210543/IMG-20250902-WA0019_dslgk2.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210544/IMG-20250902-WA0021_xwgiu8.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210544/IMG-20250902-WA0020_qfulkr.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210545/IMG-20250902-WA0024_fkwkvd.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210545/IMG-20250902-WA0023_wvj33r.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210546/IMG-20250902-WA0027_dwebj4.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210546/IMG-20250902-WA0028_dpzyjm.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210546/IMG-20250902-WA0029_lbpjgj.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210547/IMG-20250902-WA0030_eq8ule.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210547/IMG-20250902-WA0032_ccr2ke.jpg'
       ],
-      glb:'',
-      description:'9,000 km · GDL.'
+      descripcion:'Carrera 4S 2022.'
+    },
+    /* Tarjeta del auto #6 */
+    {
+      id:6,
+      estado:'disponible',
+      marca:'Porsche',
+      modelo:'911 GTS 2023',
+      imagen:'https://res.cloudinary.com/dut904eoa/image/upload/v1757210538/IMG-20250902-WA0001_v6km2k.jpg',
+      galeria:[
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210538/IMG-20250902-WA0001_v6km2k.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210538/IMG-20250902-WA0001_v6km2k.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210539/IMG-20250902-WA0004_mmdcdz.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210538/IMG-20250902-WA0002_wcj9zw.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210540/IMG-20250902-WA0007_dxhwvb.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210540/IMG-20250902-WA0006_cccime.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210540/IMG-20250902-WA0009_mfh1nx.jpg'
+      ],
+      descripcion:'9,000 km · GDL.'
+    },
+    /* Tarjeta del auto #7 */
+    {
+      id:7,
+      estado:'disponible',
+      marca:'Lamborghini',
+      modelo:'Lamborghini Huracán',
+      imagen:'https://res.cloudinary.com/dut904eoa/image/upload/v1757210537/IMG-20250828-WA0056_jggdjh.jpg',
+      galeria:[
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210537/IMG-20250828-WA0056_jggdjh.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210537/IMG-20250828-WA0055_r7noxz.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210536/IMG-20250828-WA0054_kqr56b.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210536/IMG-20250828-WA0053_tljfaj.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210537/IMG-20250828-WA0057_uglhdr.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210538/IMG-20250828-WA0058_mudp9l.jpg',
+        'https://res.cloudinary.com/dut904eoa/image/upload/v1757210538/IMG-20250828-WA0059_uxriyz.jpg'
+      ],
+      descripcion:''
     }
   ];
 
-  /* ============ Estado / helpers ============ */
-  const WHATSAPP_NUMBER = '5213312345678';
-  let selectedCar = CARS[0];
-  let selectedPhotoIndex = 0;
+  /* ============================================================
+     CONTACTO POR WHATSAPP
+     <<< CAMBIA AQUÍ TU NÚMERO >>>  Ejemplo: '5213312345678'
+     Formato internacional sin + ni espacios.
+     ============================================================ */
+  const NUMERO_WHATSAPP = '5213312345678'; // <<< CAMBIA ESTE VALOR
+
+  /* Estado/UI */
+  let auto_seleccionado = AUTOS[0];
+  let indice_foto_seleccionada = 0;
   document.getElementById('year').textContent = new Date().getFullYear();
 
-  function priceLabel(car){
-    // Para destacada/visor: muestra precio real o texto
-    if(typeof car.price === 'number' && !isNaN(car.price)) return '$' + car.price.toLocaleString();
-    return car.priceText || 'A consultar';
+  /* -------- Filtros -------- */
+  function poblar_filtros(){
+    const sel_marca = document.getElementById('brandFilter');
+    const sel_modelo = document.getElementById('modelFilter');
+    const marcas = ['Todos', ...new Set(AUTOS.map(a => a.marca))];
+    const modelos = ['Todos', ...new Set(AUTOS.map(a => a.modelo))];
+    marcas.forEach(m=>{ const o=document.createElement('option'); o.value=m; o.textContent=m; sel_marca.appendChild(o); });
+    modelos.forEach(m=>{ const o=document.createElement('option'); o.value=m; o.textContent=m; sel_modelo.appendChild(o); });
   }
 
-  /* ============ Filtros ============ */
-  function populateFilters(){
-    const bf = document.getElementById('brandFilter');
-    const mf = document.getElementById('modelFilter');
-    const brands = ['Todos', ...new Set(CARS.map(c => c.brand))];
-    const models = ['Todos', ...new Set(CARS.map(c => c.model))];
-    brands.forEach(b=>{ const o=document.createElement('option'); o.value=b; o.textContent=b; bf.appendChild(o); });
-    models.forEach(m=>{ const o=document.createElement('option'); o.value=m; o.textContent=m; mf.appendChild(o); });
-  }
+  /* -------- Tarjeta (UI alineada y sin precios) -------- */
+  function tarjeta_auto(auto){
+    const tarjeta = document.createElement('article');
+    tarjeta.className = 'car-card';
 
-  /* ============ Tarjeta ============ */
-  function carCard(car){
-    const card = document.createElement('article');
-    card.className = 'car-card';
+    // Imagen con badge "$" + estado si aplica
+    const envoltura_img = document.createElement('div');
+    envoltura_img.className = 'img-wrap';
 
-    // Imagen con badge del "$"
-    const wrap = document.createElement('div');
-    wrap.className = 'img-wrap';
     const img = document.createElement('img');
-    img.src = car.img; img.alt = `${car.brand} ${car.model}`; img.loading = 'lazy';
-    img.addEventListener('click', () => openViewer(car.id));
+    img.src = auto.imagen; img.alt = `${auto.marca} ${auto.modelo}`; img.loading = 'lazy';
+    img.addEventListener('click', () => abrir_visor(auto.id));
+
     const badge = document.createElement('div'); badge.className='badge-price'; badge.textContent='$';
-    wrap.append(img, badge);
-    card.appendChild(wrap);
 
-    // Meta + acciones (título en una línea y botones iguales)
+    // Estado visual: soporta español e inglés
+    const estado = (auto.estado || '').toLowerCase();
+    if (['reservado','reserved'].includes(estado) || ['vendido','sold'].includes(estado)){
+      const pastilla = document.createElement('div');
+      const clase = ['vendido','sold'].includes(estado) ? 'vendido' : 'reservado';
+      pastilla.className = `status-pill ${clase}`;
+      pastilla.textContent = clase === 'vendido' ? 'NO DISPONIBLE' : 'RESERVADO';
+      envoltura_img.appendChild(pastilla);
+    }
+
+    envoltura_img.append(img, badge);
+    tarjeta.appendChild(envoltura_img);
+
+    // Meta + acciones
     const meta = document.createElement('div'); meta.className='meta';
-    const title = document.createElement('div'); title.className='title'; title.textContent = `${car.brand} · ${car.model}`;
-    const actions = document.createElement('div'); actions.className='actions';
-    const bDetails = document.createElement('button'); bDetails.className='btn btn-primary'; bDetails.type='button'; bDetails.textContent='Detalles';
-    bDetails.addEventListener('click', () => openViewer(car.id));
-    const bwa = document.createElement('button'); bwa.className='btn btn-outline'; bwa.type='button'; bwa.textContent='Contactar';
-    bwa.addEventListener('click', () => contactWhatsApp(car.id));
-    actions.append(bDetails, bwa);
-    meta.append(title, actions);
-    card.appendChild(meta);
+    const titulo = document.createElement('div'); titulo.className='title'; titulo.textContent = `${auto.marca} · ${auto.modelo}`;
+    const acciones = document.createElement('div'); acciones.className='actions';
+    const btn_detalles = document.createElement('button'); btn_detalles.className='btn btn-primary'; btn_detalles.type='button'; btn_detalles.textContent='Detalles';
+    btn_detalles.addEventListener('click', () => abrir_visor(auto.id));
+    const btn_whatsapp = document.createElement('button'); btn_whatsapp.className='btn btn-outline'; btn_whatsapp.type='button'; btn_whatsapp.textContent='Contactar';
+    btn_whatsapp.addEventListener('click', () => contactar_whatsapp(auto.id));
+    acciones.append(btn_detalles, btn_whatsapp);
+    meta.append(titulo, acciones);
+    tarjeta.appendChild(meta);
 
-    return card;
+    return tarjeta;
   }
 
-  /* ============ Listado (sin orden por precio) ============ */
-  function updateList(){
-    const bf = document.getElementById('brandFilter').value;
-    const mf = document.getElementById('modelFilter').value;
+  /* -------- Listado (sin orden por precio) -------- */
+  function actualizar_lista(){
+    const v_marca = document.getElementById('brandFilter').value;
+    const v_modelo = document.getElementById('modelFilter').value;
 
-    let list = CARS.slice();
-    if(bf !== 'Todos') list = list.filter(c => c.brand === bf);
-    if(mf !== 'Todos') list = list.filter(c => c.model === mf);
+    let lista = AUTOS.slice();
+    if(v_marca !== 'Todos') lista = lista.filter(a => a.marca === v_marca);
+    if(v_modelo !== 'Todos') lista = lista.filter(a => a.modelo === v_modelo);
 
     const grid = document.getElementById('carsGrid');
     grid.innerHTML = '';
-    list.forEach(car => grid.appendChild(carCard(car)));
+    lista.forEach(auto => grid.appendChild(tarjeta_auto(auto)));
 
     // Mantener destacada coherente
-    const currentId = selectedCar?.id;
-    const first = list.find(c => c.id === currentId) || list[0] || CARS[0];
-    selectedCar = first;
-    updateFeatureCard(first);
+    const id_actual = auto_seleccionado?.id;
+    const primero = lista.find(a => a.id === id_actual) || lista[0] || AUTOS[0];
+    auto_seleccionado = primero;
+    actualizar_destacada(primero);
   }
 
-  /* ============ Destacada ============ */
-  function updateFeatureCard(car){
+  /* -------- Destacada (sin precio) -------- */
+  function actualizar_destacada(auto){
     const img = document.getElementById('featureImg');
-    img.src = car.img; img.alt = `${car.brand} ${car.model}`; img.loading = 'lazy';
-    document.getElementById('featureBrand').textContent = car.brand;
-    document.getElementById('featureModel').textContent = car.model;
-    document.getElementById('featurePrice').textContent = priceLabel(car);
+    img.src = auto.imagen; img.alt = `${auto.marca} ${auto.modelo}`; img.loading = 'lazy';
+    document.getElementById('featureBrand').textContent = auto.marca;
+    document.getElementById('featureModel').textContent = auto.modelo;
   }
 
-  /* ============ Visor ============ */
-  function renderMainPhoto(car, index){
-    const pics = Array.isArray(car.gallery) && car.gallery.length ? car.gallery : [car.img];
-    const container = document.getElementById('modelContainer');
-    container.innerHTML = '';
+  /* -------- Visor de detalles -------- */
+  function renderizar_foto_principal(auto, indice){
+    const fotos = Array.isArray(auto.galeria) && auto.galeria.length ? auto.galeria : [auto.imagen];
+    const contenedor = document.getElementById('modelContainer');
+    contenedor.innerHTML = '';
 
     const im = document.createElement('img');
-    im.src = pics[index]; im.alt = `${car.brand} ${car.model} - foto ${index+1}`;
+    im.src = fotos[indice]; im.alt = `${auto.marca} ${auto.modelo} - foto ${indice+1}`;
     im.loading = 'lazy';
-    container.appendChild(im);
+    contenedor.appendChild(im);
 
-    if(pics.length > 1){
+    if(fotos.length > 1){
       const nav = document.createElement('div'); nav.className = 'overlay-nav';
       const prev = document.createElement('button'); prev.className = 'overlay-btn'; prev.setAttribute('aria-label','Foto anterior'); prev.textContent='‹';
-      prev.onclick = () => { selectedPhotoIndex = (selectedPhotoIndex - 1 + pics.length) % pics.length; renderMainPhoto(car, selectedPhotoIndex); renderThumbs(car); };
+      prev.onclick = () => { indice_foto_seleccionada = (indice_foto_seleccionada - 1 + fotos.length) % fotos.length; renderizar_foto_principal(auto, indice_foto_seleccionada); renderizar_miniaturas(auto); };
       const next = document.createElement('button'); next.className = 'overlay-btn'; next.setAttribute('aria-label','Foto siguiente'); next.textContent='›';
-      next.onclick = () => { selectedPhotoIndex = (selectedPhotoIndex + 1) % pics.length; renderMainPhoto(car, selectedPhotoIndex); renderThumbs(car); };
+      next.onclick = () => { indice_foto_seleccionada = (indice_foto_seleccionada + 1) % fotos.length; renderizar_foto_principal(auto, indice_foto_seleccionada); renderizar_miniaturas(auto); };
       nav.append(prev, next);
-      container.appendChild(nav);
+      contenedor.appendChild(nav);
     }
   }
 
-  function renderThumbs(car){
-    const strip = document.getElementById('thumbStrip');
-    strip.innerHTML = '';
-    const pics = Array.isArray(car.gallery) && car.gallery.length ? car.gallery : [car.img];
+  function renderizar_miniaturas(auto){
+    const tira = document.getElementById('thumbStrip');
+    tira.innerHTML = '';
+    const fotos = Array.isArray(auto.galeria) && auto.galeria.length ? auto.galeria : [auto.imagen];
 
-    pics.forEach((url, idx) => {
+    fotos.forEach((url, idx) => {
       const t = document.createElement('img');
-      t.src = url; t.alt = `${car.brand} ${car.model} - miniatura ${idx+1}`; t.loading='lazy';
-      if(idx === selectedPhotoIndex) t.classList.add('active');
-      t.addEventListener('click', () => { selectedPhotoIndex = idx; renderMainPhoto(car, selectedPhotoIndex); renderThumbs(car); });
-      strip.appendChild(t);
+      t.src = url; t.alt = `${auto.marca} ${auto.modelo} - miniatura ${idx+1}`; t.loading='lazy';
+      if(idx === indice_foto_seleccionada) t.classList.add('active');
+      t.addEventListener('click', () => { indice_foto_seleccionada = idx; renderizar_foto_principal(auto, indice_foto_seleccionada); renderizar_miniaturas(auto); });
+      tira.appendChild(t);
     });
   }
 
-  function openViewer(idOrObj){
-    const car = typeof idOrObj === 'object' ? idOrObj : CARS.find(c=>c.id === idOrObj);
-    if(!car) return;
-    selectedCar = car; selectedPhotoIndex = 0;
+  function abrir_visor(id_o_auto){
+    const auto = typeof id_o_auto === 'object' ? id_o_auto : AUTOS.find(a=>a.id === id_o_auto);
+    if(!auto) return;
+    auto_seleccionado = auto; indice_foto_seleccionada = 0;
 
-    const viewer = document.getElementById('viewer');
-    viewer.style.display = 'flex';
-    document.getElementById('viewBrand').textContent = car.brand;
-    document.getElementById('viewModel').textContent = car.model;
-    document.getElementById('viewPrice').textContent = priceLabel(car);
-    document.getElementById('viewDesc').textContent = car.description || '';
+    const visor = document.getElementById('viewer');
+    visor.style.display = 'flex';
+    document.getElementById('viewBrand').textContent = auto.marca;
+    document.getElementById('viewModel').textContent = auto.modelo;
+    document.getElementById('viewDesc').textContent = auto.descripcion || '';
 
-    renderMainPhoto(car, selectedPhotoIndex);
-    renderThumbs(car);
+    renderizar_foto_principal(auto, indice_foto_seleccionada);
+    renderizar_miniaturas(auto);
 
-    viewer.scrollIntoView({behavior:'smooth', block:'center'});
+    visor.scrollIntoView({behavior:'smooth', block:'center'});
   }
 
-  function closeViewer(){
+  function cerrar_visor(){
     document.getElementById('viewer').style.display = 'none';
     document.getElementById('modelContainer').innerHTML =
       '<div id="modelPlaceholder" style="color:#5f6670;padding:12px;">Selecciona un auto para ver sus fotos 📸</div>';
     document.getElementById('thumbStrip').innerHTML = '';
   }
 
-  /* ============ Acciones ============ */
-  function contactWhatsApp(idOrObj){
-    const car = typeof idOrObj === 'object' ? idOrObj : CARS.find(c=>c.id === idOrObj) || selectedCar;
-    if(!car) return;
-    const text = encodeURIComponent(`Hola 👋 estoy interesado en el ${car.brand} ${car.model} (ID:${car.id}). ¿Me pueden dar más detalles?`);
-    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${text}`;
+  /* -------- Acciones -------- */
+  function contactar_whatsapp(id_o_auto){
+    const auto = typeof id_o_auto === 'object' ? id_o_auto : AUTOS.find(a=>a.id === id_o_auto) || auto_seleccionado;
+    if(!auto) return;
+    const texto = encodeURIComponent(`Hola 👋 estoy interesado en el ${auto.marca} ${auto.modelo} (ID:${auto.id}). ¿Me pueden dar más detalles?`);
+    const url = `https://wa.me/${NUMERO_WHATSAPP}?text=${texto}`;
     const w = window.open(url, '_blank', 'noopener,noreferrer'); if (w) w.opener = null;
   }
-  function scrollToSection(id){ document.getElementById(id).scrollIntoView({behavior:'smooth'}); }
+  function desplazar_a_seccion(id){ document.getElementById(id).scrollIntoView({behavior:'smooth'}); }
 
-  /* ============ Adorno: emojis cayendo ============ */
-  function startEmojiFall(){
+  /* -------- Adorno: emojis cayendo -------- */
+  function iniciar_cascada_emojis(){
     if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const parent = document.getElementById('emojiFall');
+    const contenedor = document.getElementById('emojiFall');
     const emojis = ['🚗','🚘','🏎️','🚙','🛻'];
     for(let i=0;i<12;i++){
       const s = document.createElement('div'); s.className='emoji';
@@ -491,44 +558,44 @@
       const left = Math.floor(Math.random()*100), dur = 6 + Math.random()*8, delay = -Math.random()*10;
       s.style.left = left + '%'; s.style.top = (Math.random()*-30) + 'vh';
       s.style.animationDuration = dur + 's'; s.style.animationDelay = delay + 's';
-      parent.appendChild(s);
+      contenedor.appendChild(s);
     }
   }
 
-  /* ============ Listeners ============ */
-  function attachListeners(){
-    document.getElementById('btnInv').addEventListener('click', () => scrollToSection('inventario'));
-    document.getElementById('btnViewer').addEventListener('click', () => scrollToSection('viewer'));
+  /* -------- Listeners -------- */
+  function vincular_eventos(){
+    document.getElementById('btnInv').addEventListener('click', () => desplazar_a_seccion('inventario'));
 
-    document.getElementById('feature3dBtn').addEventListener('click', () => openViewer(selectedCar));
-    document.getElementById('featureContactBtn').addEventListener('click', () => contactWhatsApp(selectedCar));
+    document.getElementById('feature3dBtn').addEventListener('click', () => abrir_visor(auto_seleccionado));
+    document.getElementById('featureContactBtn').addEventListener('click', () => contactar_whatsapp(auto_seleccionado));
 
-    document.getElementById('viewerCloseBtn').addEventListener('click', closeViewer);
-    document.getElementById('viewerWhatsBtn').addEventListener('click', () => contactWhatsApp(selectedCar));
+    document.getElementById('viewerCloseBtn').addEventListener('click', cerrar_visor);
+    document.getElementById('viewerWhatsBtn').addEventListener('click', () => contactar_whatsapp(auto_seleccionado));
 
-    document.getElementById('brandFilter').addEventListener('change', updateList);
-    document.getElementById('modelFilter').addEventListener('change', updateList);
+    document.getElementById('brandFilter').addEventListener('change', actualizar_lista);
+    document.getElementById('modelFilter').addEventListener('change', actualizar_lista);
 
-    // Teclado: Esc cierra; ← → navegan fotos si hay varias
+    // Teclado: Esc cierra; ← → navegan fotos
     document.addEventListener('keydown', e => {
       if (document.getElementById('viewer').style.display === 'none') return;
-      if (e.key === 'Escape') closeViewer();
+      if (e.key === 'Escape') cerrar_visor();
       if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-        const pics = (selectedCar.gallery && selectedCar.gallery.length) ? selectedCar.gallery : [selectedCar.img];
-        if(pics.length <= 1) return;
-        if (e.key === 'ArrowLeft') selectedPhotoIndex = (selectedPhotoIndex - 1 + pics.length) % pics.length;
-        if (e.key === 'ArrowRight') selectedPhotoIndex = (selectedPhotoIndex + 1) % pics.length;
-        renderMainPhoto(selectedCar, selectedPhotoIndex);
-        renderThumbs(selectedCar);
+        const fotos = (auto_seleccionado.galeria && auto_seleccionado.galeria.length) ? auto_seleccionado.galeria : [auto_seleccionado.imagen];
+        if(fotos.length <= 1) return;
+        if (e.key === 'ArrowLeft') indice_foto_seleccionada = (indice_foto_seleccionada - 1 + fotos.length) % fotos.length;
+        if (e.key === 'ArrowRight') indice_foto_seleccionada = (indice_foto_seleccionada + 1) % fotos.length;
+        renderizar_foto_principal(auto_seleccionado, indice_foto_seleccionada);
+        renderizar_miniaturas(auto_seleccionado);
       }
     });
   }
 
-  /* ============ Init ============ */
-  populateFilters();
-  updateList();
-  startEmojiFall();
-  attachListeners();
+  /* -------- Init -------- */
+  poblar_filtros();
+  actualizar_lista();
+  iniciar_cascada_emojis();
+  vincular_eventos();
+  document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
